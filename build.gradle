@@ -15,6 +15,7 @@ ext {
 	libProvidedCompile = 'lib-provide-compile'
 	libLogging = 'lib-logging'
 	libTest = 'lib-test'
+	libDrools = 'lib-drools'
 	libExcel = 'lib-excel'
 }
 
@@ -36,6 +37,7 @@ configurations {
 	providedCompile 
 	loggingLib
 	testLib	
+	droolsLib
 	excelProcessLib
 }
 
@@ -51,6 +53,10 @@ sourceSets.main.compileClasspath += configurations.testLib
 sourceSets.test.compileClasspath += configurations.testLib
 sourceSets.test.runtimeClasspath += configurations.testLib
 
+sourceSets.main.compileClasspath += configurations.droolsLib
+sourceSets.test.compileClasspath += configurations.droolsLib
+sourceSets.test.compileClasspath += configurations.droolsLib
+
 sourceSets.main.compileClasspath += configurations.excelProcessLib
 sourceSets.test.compileClasspath += configurations.excelProcessLib
 sourceSets.test.compileClasspath += configurations.excelProcessLib
@@ -60,6 +66,7 @@ repositories {
     mavenCentral()
 	maven {
 		url "http://repository.primefaces.org"
+		url "http://repository.jboss.org/nexus/content/groups/public"
 	}
 }
 
@@ -150,11 +157,16 @@ dependencies {
 	excelProcessLib 'commons-io:commons-io:2.4'
 	excelProcessLib 'commons-cli:commons-cli:1.3'
 	
-
+	//Drools
+	ext.droolsVersion = '6.3.0.Final'
+	droolsLib "org.kie:kie-api:$droolsVersion"
+ 	droolsLib "org.drools:drools-core:$droolsVersion"
+ 	droolsLib "org.drools:drools-compiler:$droolsVersion"
+ 	droolsLib "org.drools:drools-decisiontables:$droolsVersion"
 	
 }
 
-task copyLibs(dependsOn: ['cleanDirsWin', 'copyCompileLibs', 'copyLoggingLibs', 'copyTestLibs', 'copyProvidedCompileLibs']) {
+task copyLibs(dependsOn: ['cleanDirsWin', 'copyCompileLibs', 'copyLoggingLibs', 'copyTestLibs', 'copyProvidedCompileLibs', 'copyDroolsLibs']) {
 	
 }
 
@@ -169,7 +181,7 @@ task cleanDirsWin(type:Exec){
 
 	workingDir file('.')
 	
-	commandLine 'cmd', '/c', "RD /S /Q $libCompile & RD /S /Q $libLogging & RD /S /Q $libTest & RD /S /Q $libProvidedCompile"
+	commandLine 'cmd', '/c', "RD /S /Q $libCompile & RD /S /Q $libLogging & RD /S /Q $libTest & RD /S /Q $libProvidedCompile & RD /S /Q $libDrools"
 	
 	ignoreExitValue = true
 	
@@ -215,6 +227,14 @@ task copyExcelLibs(type: Copy) {
 	into file("./$libExcel")
 
 	from configurations.excelProcessLib
+
+}
+
+task copyDroolsLibs(type: Copy) {
+
+	into file("./$libDrools")
+
+	from configurations.droolsLib
 
 }
 
