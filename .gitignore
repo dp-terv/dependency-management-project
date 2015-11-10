@@ -1,0 +1,8 @@
+/build/
+/.gradle/
+/.settings/
+/lib-compile/
+/lib-logging/
+/lib-test/
+/.classpath
+/.project

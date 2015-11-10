@@ -1,0 +1,233 @@
+import java.nio.charset.Charset
+System.setProperty("file.encoding", "UTF-8")
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+version = '0.1'
+
+def localVariable = "localVariable"
+
+ext {
+	extraProperty = "Extra properties can be added, read and set via the owning object's ext property. Alternatively, an ext block can be used to add multiple properties at once."
+
+	libCompile = 'lib-compile'
+	libProvidedCompile = 'lib-provide-compile'
+	libLogging = 'lib-logging'
+	libTest = 'lib-test'
+	libExcel = 'lib-excel'
+}
+
+
+jar {
+	manifest.attributes provider: 'BME V37ZEN'
+}
+
+
+compileJava {
+	options.encoding = 'UTF-8'
+}
+compileTestJava {
+	options.encoding = 'UTF-8'		
+}
+
+
+configurations { 
+	providedCompile 
+	loggingLib
+	testLib	
+	excelProcessLib
+}
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+sourceSets.main.compileClasspath += configurations.loggingLib
+sourceSets.test.compileClasspath += configurations.loggingLib
+sourceSets.test.runtimeClasspath += configurations.loggingLib
+
+sourceSets.main.compileClasspath += configurations.testLib
+sourceSets.test.compileClasspath += configurations.testLib
+sourceSets.test.runtimeClasspath += configurations.testLib
+
+sourceSets.main.compileClasspath += configurations.excelProcessLib
+sourceSets.test.compileClasspath += configurations.excelProcessLib
+sourceSets.test.compileClasspath += configurations.excelProcessLib
+	
+	
+repositories {
+    mavenCentral()
+	maven {
+		url "http://repository.primefaces.org"
+	}
+}
+
+dependencies {
+	///Verzion variables:
+	ext.springVersion = '4.1.5.RELEASE'
+	ext.SpringDataJPAVersion = '1.8.0.RELEASE'
+	ext.springWSVersion = '2.2.0.RELEASE'
+	ext.springIntegrationVersion = '4.1.2.RELEASE'
+	
+	ext.hibernateVersion = '4.3.8.Final'
+	ext.postgreConnectorVersion = '9.1-901-1.jdbc4'
+	ext.mysqlConnectorVersion = '5.1.30'
+	
+	ext.logbackVersion = '1.1.2'
+	ext.log4jVersion = '2.2'
+	
+	ext.junitVersion = '4.12'
+	
+	ext.servletApiVersion = '3.1.0'
+	ext.enterpriseCdiVersion = '1.2'
+	ext.glassfishElImplVersion = '2.2'
+	ext.jeeCdiVersion = '1.2'
+	
+	ext.JSFVersion = '2.2.10'
+	
+	ext.primefacesVersion = '5.1'
+	ext.primefacesExtensionVersion = '3.0.0'
+	ext.bootstrapVersion = '1.0.10'
+	
+	ext.gsonVersion = '2.3.1'
+	ext.prettyFacesVersion = '3.3.3'
+		
+	///Dependencies:	
+	loggingLib "ch.qos.logback:logback-classic:$logbackVersion"
+	
+	testLib "org.springframework:spring-test:$springVersion"
+	testLib "junit:junit:$junitVersion"
+	
+	
+	
+	//loggingLib "org.apache.logging.log4j:log4j-api:$log4jVersion"
+	//loggingLib "org.apache.logging.log4j:log4j-core:$log4jVersion"
+	
+	compile "com.google.code.gson:gson:$gsonVersion"	
+	
+	compile "org.springframework:spring-context:$springVersion"
+	compile "org.springframework:spring-jdbc:$springVersion" 
+	compile "org.springframework.data:spring-data-jpa:$SpringDataJPAVersion"
+	compile "org.springframework:spring-webmvc:$springVersion"
+	compile "org.springframework.ws:spring-xml:$springWSVersion"
+	
+	//compile "com.sun.faces:jsf-api:$JSFVersion"
+	//compile "com.sun.faces:jsf-impl:$JSFVersion"
+	
+	//compile "org.glassfish.web:el-impl:$glassfishElImplVersion"
+
+	//compile "javax.enterprise:cdi-api:$jeeCdiVersion"
+	
+	//compile "org.primefaces:primefaces:$primefacesVersion"
+	//compile "org.primefaces.extensions:primefaces-extensions:$primefacesExtensionVersion"
+	
+	
+	//compile "org.primefaces.themes:bootstrap:$bootstrapVersion"
+	
+	//compile "com.ocpsoft:prettyfaces-jsf2:$prettyFacesVersion"
+		
+	compile "org.hibernate:hibernate-core:$hibernateVersion"
+	compile "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+	compile "postgresql:postgresql:$postgreConnectorVersion"
+	compile "mysql:mysql-connector-java:$mysqlConnectorVersion"
+
+	//For rest template:
+	compile 'org.apache.httpcomponents:httpclient:4.5'
+		//httpcore-4.4.1.jar
+		//httpclient-4.5.jar
+		//commons-codec-1.9.jar
+	
+	
+	//compile "org.springframework.integration:spring-integration-core:$springIntegrationVersion"
+	//compile "org.springframework.integration:spring-integration-file:$springIntegrationVersion"
+	//compile "org.springframework.integration:spring-integration-xml:$springIntegrationVersion"
+
+	//providedCompile "javax.servlet:javax.servlet-api:$servletApiVersion"
+	
+	//Office Processing Libs
+	excelProcessLib 'org.apache.poi:poi-ooxml:3.11'
+	excelProcessLib 'commons-io:commons-io:2.4'
+	excelProcessLib 'commons-cli:commons-cli:1.3'
+	
+
+	
+}
+
+task copyLibs(dependsOn: ['cleanDirsWin', 'copyCompileLibs', 'copyLoggingLibs', 'copyTestLibs', 'copyProvidedCompileLibs']) {
+	
+}
+
+/*
+	libComplie = 'lib-compile';
+	libProvidedCompile = 'lib-provide-compile';
+	libLogging = 'lib-logging';
+	libTest = 'lib-test';
+*/
+
+task cleanDirsWin(type:Exec){
+
+	workingDir file('.')
+	
+	commandLine 'cmd', '/c', "RD /S /Q $libCompile & RD /S /Q $libLogging & RD /S /Q $libTest & RD /S /Q $libProvidedCompile"
+	
+	ignoreExitValue = true
+	
+	//store the output instead of printing to the console:
+  	standardOutput = new ByteArrayOutputStream()
+  	//extension method stopTomcat.output() can be used to obtain the output:
+	ext.output = {
+    	return standardOutput.toString()
+	}
+	
+  	errorOutput = new ByteArrayOutputStream()
+  	ext.errOutput = {
+    	return standardOutput.toString()
+	}
+}
+
+task copyCompileLibs(type: Copy) {
+
+	into file("./$libCompile")
+
+	from configurations.compile
+
+}
+
+task copyLoggingLibs(type: Copy) {
+
+	into file("./$libLogging")
+
+	from configurations.loggingLib
+
+}
+
+task copyTestLibs(type: Copy) {
+
+	into file("./$libTest")
+
+	from configurations.testLib
+
+}
+
+task copyExcelLibs(type: Copy) {
+
+	into file("./$libExcel")
+
+	from configurations.excelProcessLib
+
+}
+
+task copyProvidedCompileLibs(type: Copy) {
+
+	into file("./$libProvidedCompile")
+
+	from configurations.providedCompile
+
+}
+
+task getGradleCharset << {
+	print "Default CharSet: "
+	println Charset.defaultCharset().toString()
+
+}
