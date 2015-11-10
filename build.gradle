@@ -75,7 +75,7 @@ dependencies {
 	ext.springVersion = '4.1.5.RELEASE'
 	ext.SpringDataJPAVersion = '1.8.0.RELEASE'
 	ext.springWSVersion = '2.2.0.RELEASE'
-	ext.springIntegrationVersion = '4.1.2.RELEASE'
+	ext.springIntegrationVersion = '4.2.1.RELEASE'
 	
 	ext.hibernateVersion = '4.3.8.Final'
 	ext.postgreConnectorVersion = '9.1-901-1.jdbc4'
@@ -113,6 +113,8 @@ dependencies {
 	
 	compile "com.google.code.gson:gson:$gsonVersion"	
 	
+	compile 'joda-time:joda-time:2.9'
+	
 	compile "org.springframework:spring-context:$springVersion"
 	compile "org.springframework:spring-jdbc:$springVersion" 
 	compile "org.springframework.data:spring-data-jpa:$SpringDataJPAVersion"
@@ -146,9 +148,9 @@ dependencies {
 		//commons-codec-1.9.jar
 	
 	
-	//compile "org.springframework.integration:spring-integration-core:$springIntegrationVersion"
-	//compile "org.springframework.integration:spring-integration-file:$springIntegrationVersion"
-	//compile "org.springframework.integration:spring-integration-xml:$springIntegrationVersion"
+	compile "org.springframework.integration:spring-integration-core:$springIntegrationVersion"
+	compile "org.springframework.integration:spring-integration-file:$springIntegrationVersion"
+	compile "org.springframework.integration:spring-integration-xml:$springIntegrationVersion"
 
 	//providedCompile "javax.servlet:javax.servlet-api:$servletApiVersion"
 	
